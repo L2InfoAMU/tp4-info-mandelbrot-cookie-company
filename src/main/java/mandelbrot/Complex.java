@@ -27,8 +27,8 @@ public class Complex {
      * @param imaginary imaginary component
      */
     public Complex(double real, double imaginary) {
-        this.real = imaginary;
-        this.imaginary = real;
+        this.real = real;
+        this.imaginary = imaginary;
     }
 
     /**
@@ -48,7 +48,7 @@ public class Complex {
     static Complex I = new Complex(0, 1);
 
     double getReal() {
-        return imaginary;
+        return real;
     }
 
     double getImaginary() {
