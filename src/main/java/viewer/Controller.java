@@ -1,9 +1,14 @@
 package viewer;
 
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.paint.Color;
 import mandelbrot.Complex;
 import mandelbrot.Mandelbrot;
@@ -11,6 +16,7 @@ import mandelbrot.Mandelbrot;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -43,9 +49,68 @@ public class Controller implements Initializable {
                     Color.rgb(145, 121, 82),
                     Color.rgb(250, 250, 200)
             };
+    /* colors of the histogram */
+    private Color[] colors2 =
+            {Color.gray(0.2),
+                    Color.gray(0.7),
+                    Color.rgb(145, 118, 55),
+                    Color.rgb(132, 74, 63),
+                    Color.rgb(145, 121, 82),
+                    Color.rgb(200, 250, 250)
+            };
     /* algorithm to generate the distribution of colors */
-    private Histogram histogram = new Histogram(breakpoints, colors);
+    private Histogram histogram1 = new Histogram(breakpoints, colors);
+    private Histogram histogram2 = new Histogram(breakpoints, colors2);
+    private Histogram histogram = histogram1;
 
+    Double readDouble(Optional<String> stringOptional) {
+        return stringOptional.map(Double::valueOf).orElse(null);
+    }
+
+    Integer readInteger(Optional<String> stringOptional) {
+        return stringOptional.map(Integer::valueOf).orElse(null);
+    }
+
+    @FXML
+    void zoom(ActionEvent event) {
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("set zoom");
+
+        Double zoomCoeff = readDouble(inputDialog.showAndWait());
+        if(zoomCoeff == null)
+            return;
+
+        inputDialog.setTitle("pos x zoom");
+
+        Double posx = readDouble(inputDialog.showAndWait());
+        if(posx == null)
+            return;
+
+        inputDialog.setTitle("pos y zoom");
+
+        Double posy = readDouble(inputDialog.showAndWait());
+        if(posy == null)
+            return;
+
+        System.out.println((1./zoomCoeff) +  " [" + posx + "," + posy + "]");
+
+        camera.zoom(1./zoomCoeff);
+        camera.moveCenter(posx, posy);
+
+        System.out.println("start render");
+        render();
+        System.out.println("render done");
+    }
+
+
+    @FXML
+    void switchColor(ActionEvent event) {
+        if(histogram == histogram1)
+            histogram = histogram2;
+        else
+            histogram = histogram1;
+        render();
+    }
     /**
      * Method called when the graphical interface is loaded
      *
@@ -54,7 +119,7 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        render();
+//        render();
     }
 
     /**

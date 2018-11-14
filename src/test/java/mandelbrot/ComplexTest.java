@@ -220,7 +220,7 @@ public class ComplexTest {
     }
 
     @Test
-    void equals() {
+    void testEquals() {
         Complex c1 = new Complex(0,0);
         Complex c2 = new Complex(1,0);
 

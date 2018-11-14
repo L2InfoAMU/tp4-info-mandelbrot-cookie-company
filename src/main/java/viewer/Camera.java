@@ -24,7 +24,7 @@ class Camera {
     private Complex center; /* Center of the rectangle */
     private Complex width; /* Vector for the width of the rectangle */
     private Complex height; /* Vector for the height of the rectangle */
-
+    private double scale;
 
     /**
      * Creates a view.
@@ -38,6 +38,7 @@ class Camera {
         this.width = Complex.real(width);
         this.height = new Complex(0, width / aspectRatio);
         this.center = new Complex(centerX, centerY);
+        this.scale = 1.0;
     }
 
     /**
@@ -49,7 +50,14 @@ class Camera {
      * @return the complex at this position of the rectangle
      */
     Complex toComplex(double tx, double ty) {
-        return center.add(width.scale(tx - 0.5)).add(height.scale(ty - 0.5));
+        return center.add(width.scale(tx - 0.5)).add(height.scale(ty - 0.5)).scale(scale);
     }
 
+    public void zoom(double scale) {
+        this.scale = scale;
+    }
+
+    public void moveCenter(double centerX, double centerY){
+        this.center = new Complex(centerX, centerY);
+    }
 }
